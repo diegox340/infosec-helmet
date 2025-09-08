@@ -6,9 +6,6 @@ app.use(helmet());
 app.use(express.static('public'));
 app.disable('strict-transport-security');
 
-const api = require('./server.js');
-app.use('/_api', api);
-
 app.get("/", function (request, response) {
   response.sendFile(__dirname + '/views/index.html');
 });
