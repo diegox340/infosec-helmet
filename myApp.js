@@ -1,18 +1,30 @@
 const express = require('express');
 const app = express();
-const helmet = require('helmet');
 
-app.use(helmet());
-app.use(express.static('public'));
-app.disable('strict-transport-security');
+const bcrypt = require('bcryptjs');
 
-app.get("/", function (request, response) {
-  response.sendFile(__dirname + '/views/index.html');
+const saltRounds = 12;
+const myPlaintextPassword = 'sUperpassw0rd!';
+const someOtherPlaintextPassword = 'pass123';
+
+//START_ASYNC
+bcrypt.hash(myPlaintextPassword, saltRounds, (err, hash) => {
+  if (err) return console.error(err);
+  console.log(hash);
+
+  bcrypt.compare(myPlaintextPassword, hash, (err, res) => {
+    if (err) return console.error(err);
+    console.log(res); // true
+
+    bcrypt.compare(someOtherPlaintextPassword, hash, (err, res) => {
+      if (err) return console.error(err);
+      console.log(res); // false
+    });
+  });
 });
+//END_ASYNC
 
-let port = process.env.PORT || 3000;
-app.listen(port, () => {
-  console.log(`Your app is listening on port ${port}`);
-});
+//START_SYNC
+//END_SYNC
 
 module.exports = app;
